@@ -3,8 +3,10 @@
 import Link from "next/link";
 import Image from "next/image";
 import BrandModel from "@/assets/midomanModelImage.png";
-import GenerateAccountModal from "@/components/layout/modals/GenerateAccountModal";
+import GenerateAccountModal from "@/components/modals/GenerateAccountModal";
 import { useState } from "react";
+import AddFundsModal from "@/components/modals/AddFundsModal";
+import WithdrawalFlow from "@/components/withdraw/WithdrawalFlow";
 
 export default function DashboardHome() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -13,6 +15,8 @@ export default function DashboardHome() {
     bankName: string;
     accountNumber: string;
   } | null>(null);
+  const [isAddFundsOpen, setIsAddFundsOpen] = useState(false);
+  const [showWithdraw, setShowWithdraw] = useState(false);
 
   const hasAccount = !!account;
 
@@ -76,7 +80,10 @@ export default function DashboardHome() {
                 </div>
                 <div className="flex items-center col-span-1 bg-gray-50 h-25 px-3 rounded-lg -ml-2 z-50">
                   {hasAccount ? (
-                    <button className="flex items-center gap-2 bg-white h-15 w-52 hover:bg-white/20 border border-blue-500 text-blue-500 border-dashed rounded-xl px-4 py-2.5 text-sm font-medium transition">
+                    <button
+                      onClick={() => setIsAddFundsOpen(true)}
+                      className="flex items-center gap-2 bg-white h-15 w-52 hover:bg-white/20 border border-blue-500 text-blue-500 border-dashed rounded-xl px-4 py-2.5 text-sm font-medium transition"
+                    >
                       <svg
                         className="w-4 h-4"
                         fill="none"
@@ -201,20 +208,36 @@ export default function DashboardHome() {
                     </svg>
                   ),
                 },
-              ].map((action) => (
-                <Link
-                  key={action.label}
-                  href={action.href}
-                  className="flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-gray-50 transition group"
-                >
-                  <div className="w-12 h-12 rounded-full bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-600 group-hover:bg-blue-50 group-hover:text-blue-600 group-hover:border-blue-100 transition">
-                    {action.icon}
-                  </div>
-                  <span className="text-xs font-medium text-gray-600 group-hover:text-gray-900">
-                    {action.label}
-                  </span>
-                </Link>
-              ))}
+              ].map((action) =>
+                action.label === "Withdraw" ? (
+                  <button
+                    key={action.label}
+                    type="button"
+                    onClick={() => setShowWithdraw(true)}
+                    className="flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-gray-50 transition group"
+                  >
+                    <div className="w-12 h-12 rounded-full bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-600 group-hover:bg-blue-50 group-hover:text-blue-600 group-hover:border-blue-100 transition">
+                      {action.icon}
+                    </div>
+                    <span className="text-xs font-medium text-gray-600 group-hover:text-gray-900">
+                      {action.label}
+                    </span>
+                  </button>
+                ) : (
+                  <Link
+                    key={action.label}
+                    href={action.href}
+                    className="flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-gray-50 transition group"
+                  >
+                    <div className="w-12 h-12 rounded-full bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-600 group-hover:bg-blue-50 group-hover:text-blue-600 group-hover:border-blue-100 transition">
+                      {action.icon}
+                    </div>
+                    <span className="text-xs font-medium text-gray-600 group-hover:text-gray-900">
+                      {action.label}
+                    </span>
+                  </Link>
+                ),
+              )}
             </div>
           </div>
 
@@ -313,45 +336,99 @@ export default function DashboardHome() {
 
         {/* ========== RIGHT COLUMN ========== */}
         <div className="xl:col-span-7 space-y-6">
-          {/* Deposit History */}
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 h-full min-h-[320px] flex flex-col">
-            <h3 className="text-base font-semibold text-gray-900 mb-8">
-              Deposit history
-            </h3>
+          {showWithdraw ? (
+            <WithdrawalFlow
+              availableBalance={account ? 20000 : 0}
+              onClose={() => setShowWithdraw(false)}
+            />
+          ) : (
+            /* Deposit History */
+            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 h-full min-h-[320px] flex flex-col">
+              <h3 className="text-base font-semibold text-gray-900 mb-8">
+                Deposit history
+              </h3>
 
-            {/* Empty state */}
-            <div className="flex-1 flex flex-col items-center justify-center text-center px-4">
-              <div className="w-16 h-16 rounded-full bg-blue-50 flex items-center justify-center mb-4">
-                <svg
-                  className="w-8 h-8 text-blue-400"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={1.5}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
-                  />
-                </svg>
-              </div>
-              <p className="text-sm font-medium text-gray-700 mb-1">
-                You have not deposited
-              </p>
-              <p className="text-xs text-gray-400 max-w-[200px]">
-                Send money to the account number to deposit
-              </p>
+              {hasAccount ? (
+                <div className="space-y-4">
+                  {Array.from({ length: 6 }).map((_, i) => (
+                    <div key={i} className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center">
+                          <svg
+                            className="w-4 h-4 text-gray-500"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M19 14l-7 7m0 0l-7-7m7 7V3"
+                            />
+                          </svg>
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium text-gray-900">
+                            +20,000NGN
+                          </p>
+                          <p className="text-xs text-gray-400">
+                            deposit via providus bank
+                          </p>
+                        </div>
+                      </div>
+                      <span className="text-xs font-medium text-green-600">
+                        Successful
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="flex-1 flex flex-col items-center justify-center text-center px-4">
+                  <div className="w-16 h-16 rounded-full bg-blue-50 flex items-center justify-center mb-4">
+                    <svg
+                      className="w-8 h-8 text-blue-400"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={1.5}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
+                      />
+                    </svg>
+                  </div>
+                  <p className="text-sm font-medium text-gray-700 mb-1">
+                    You have not deposited
+                  </p>
+                  <p className="text-xs text-gray-400 max-w-[200px]">
+                    Send money to the account number to deposit
+                  </p>
+                </div>
+              )}
             </div>
-          </div>
+          )}
         </div>
       </div>
+
       {/* Generate Account Modal */}
       <GenerateAccountModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSuccess={(data) => setAccount(data)}
       />
+
+      {/* Add Funds Modal */}
+      {account && (
+        <AddFundsModal
+          isOpen={isAddFundsOpen}
+          onClose={() => setIsAddFundsOpen(false)}
+          accountNumber={account.accountNumber}
+          bankName={account.bankName}
+        />
+      )}
     </div>
   );
 }
