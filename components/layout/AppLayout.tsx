@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 
 const navItems = [
   {
@@ -44,7 +44,7 @@ const navItems = [
     ),
   },
   {
-    label: "Transaction",
+    label: "Transactions",
     href: "/dashboard/transactions",
     icon: (
       <svg
@@ -90,6 +90,24 @@ const navItems = [
 
 export default function AppLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const currentPage =
+    navItems.find(
+      (item) =>
+        pathname === item.href ||
+        (item.href !== "/dashboard" && pathname.startsWith(`${item.href}/`)),
+    )?.label ?? "Home";
+
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+
+    function closeOnEscape(event: KeyboardEvent) {
+      if (event.key === "Escape") setIsMobileMenuOpen(false);
+    }
+
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [isMobileMenuOpen]);
 
   return (
     <div className="min-h-screen bg-[#F7F8FA] flex">
@@ -212,27 +230,156 @@ export default function AppLayout({ children }: { children: ReactNode }) {
         </div>
       </aside>
 
+      {isMobileMenuOpen && (
+        <div className="lg:hidden fixed inset-0 z-40">
+          <button
+            type="button"
+            aria-label="Close navigation menu"
+            className="absolute inset-0 bg-gray-950/40"
+            onClick={() => setIsMobileMenuOpen(false)}
+          />
+          <aside
+            id="mobile-navigation"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Main navigation"
+            className="relative flex h-full w-80 max-w-[85vw] flex-col bg-white shadow-2xl"
+          >
+            <div className="flex items-center justify-between border-b border-gray-100 px-5 py-5">
+              <Link
+                href="/dashboard"
+                className="flex items-center gap-2.5"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600">
+                  <svg
+                    className="h-5 w-5 text-white"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+                  </svg>
+                </div>
+                <span className="text-lg font-bold tracking-tight text-blue-600">
+                  Midoman
+                </span>
+              </Link>
+              <button
+                type="button"
+                aria-label="Close navigation menu"
+                className="rounded-lg p-2 text-gray-500 transition hover:bg-gray-100 hover:text-gray-900"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <svg
+                  className="h-5 w-5"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            <nav aria-label="Main menu" className="flex-1 space-y-1 px-4 py-5">
+              <p className="px-4 pb-2 text-xs font-semibold uppercase tracking-wider text-gray-400">
+                Menu
+              </p>
+              {navItems.map((item) => {
+                const isActive =
+                  pathname === item.href ||
+                  (item.href !== "/dashboard" &&
+                    pathname.startsWith(`${item.href}/`));
+
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    aria-current={isActive ? "page" : undefined}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition ${
+                      isActive
+                        ? "bg-blue-600 text-white shadow-md shadow-blue-600/20"
+                        : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                    }`}
+                  >
+                    {item.icon}
+                    {item.label}
+                  </Link>
+                );
+              })}
+            </nav>
+
+            <div className="border-t border-gray-100 px-5 py-4">
+              <p className="text-sm font-semibold text-gray-800">
+                Payments with peace of mind
+              </p>
+              <p className="mt-1 text-xs leading-5 text-gray-500">
+                Explore escrow, review activity, and manage your account.
+              </p>
+            </div>
+          </aside>
+        </div>
+      )}
+
       {/* ========== MAIN CONTENT ========== */}
       <div className="flex-1 lg:ml-[240px] min-h-screen flex flex-col">
         {/* Top header (mobile + desktop) */}
-        <header className="sticky top-0 z-20 bg-white/80 backdrop-blur-md border-b border-gray-100 px-4 lg:px-8 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3 lg:hidden">
-            {/* Mobile menu button (optional) */}
-            <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
+        <header className="sticky top-0 z-20 flex items-center justify-between border-b border-gray-100 bg-white/80 px-4 py-4 backdrop-blur-md lg:px-8">
+          <div className="flex items-center">
+            <button
+              type="button"
+              aria-label="Open navigation menu"
+              aria-expanded={isMobileMenuOpen}
+              onClick={() => setIsMobileMenuOpen(true)}
+              className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-gray-600 transition hover:bg-gray-100 hover:text-gray-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 lg:hidden"
+            >
               <svg
-                className="w-5 h-5 text-white"
+                className="h-6 w-6"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+                aria-hidden="true"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              </svg>
+            </button>
+            <h1 className="hidden text-xl font-semibold text-gray-900 lg:block">
+              {currentPage}
+            </h1>
+          </div>
+
+          <Link
+            href="/dashboard"
+            aria-label="Midoman home"
+            className="absolute left-1/2 flex -translate-x-1/2 items-center gap-2 lg:hidden"
+          >
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600">
+              <svg
+                className="h-5 w-5 text-white"
                 viewBox="0 0 24 24"
                 fill="currentColor"
+                aria-hidden="true"
               >
                 <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
               </svg>
-            </div>
-            <span className="font-bold text-blue-600">Midoman</span>
-          </div>
-
-          <h1 className="hidden lg:block text-xl font-semibold text-gray-900">
-            Home
-          </h1>
+            </span>
+            <span className="font-bold tracking-tight text-blue-600">
+              Midoman
+            </span>
+          </Link>
 
           <div className="flex items-center gap-3 ml-auto">
             <div className="relative hidden sm:block">
