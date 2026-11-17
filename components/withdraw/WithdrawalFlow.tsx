@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Check, Landmark } from "lucide-react";
 
 type Step = "amount" | "method" | "add-bank" | "confirm" | "otp" | "success";
 
@@ -123,19 +124,11 @@ export default function WithdrawalFlow({
             className="w-full flex items-center gap-4 p-4 rounded-xl border border-gray-200 hover:border-blue-300 hover:bg-blue-50/50 transition text-left"
           >
             <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">
-              <svg
+              <Landmark
                 className="w-5 h-5 text-gray-600"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.8}
-                  d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"
-                />
-              </svg>
+                strokeWidth={1.8}
+                aria-hidden="true"
+              />
             </div>
             <div>
               <p className="font-medium text-gray-900">Bank transfer</p>
@@ -363,19 +356,7 @@ export default function WithdrawalFlow({
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
       <div className="relative bg-white rounded-2xl w-full max-w-sm shadow-xl p-8 text-center">
         <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-5">
-          <svg
-            className="w-8 h-8 text-green-600"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M5 13l4 4L19 7"
-            />
-          </svg>
+          <Check className="w-8 h-8 text-green-600" aria-hidden="true" />
         </div>
         <h3 className="text-lg font-semibold text-gray-900 mb-2">
           Withdrawal Successful

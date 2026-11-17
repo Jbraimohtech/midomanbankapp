@@ -1,178 +1,383 @@
+"use client";
+
+import { useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import {
-  ArrowUpRight,
-  BadgeCheck,
+  getBuyerEscrowsSnapshot,
+  getServerBuyerEscrowsSnapshot,
+  parseBuyerEscrowsSnapshot,
+  subscribeToBuyerEscrows,
+} from "./escrowStorage";
+import {
   Clock3,
+  FileText,
+  Mail,
+  MoreVertical,
   Plus,
   ShieldCheck,
 } from "lucide-react";
 
-const escrowItems = [
+type Tab = "buyer" | "seller";
+
+const sellerEscrows = [
   {
-    id: "ESC-2048",
-    title: "Website redesign",
-    counterparty: "Northstar Creative",
-    amount: "450,000 NGN",
-    status: "In progress",
-    detail: "Delivery due in 3 days",
-    statusClass: "bg-blue-50 text-blue-700",
+    id: "1",
+    email: "Kelvintech@gmail.com",
+    amount: "NGN20,000",
+    days: "7 days",
+    service: "Logo design",
+    status: "waiting for delivery",
+    statusColor: "orange",
   },
   {
-    id: "ESC-2047",
-    title: "Product photography",
-    counterparty: "Studio August",
-    amount: "125,000 NGN",
-    status: "Needs review",
-    detail: "Review the submitted work",
-    statusClass: "bg-amber-50 text-amber-700",
+    id: "2",
+    email: "Kelvintech@gmail.com",
+    amount: "NGN20,000",
+    days: "7 days",
+    service: "Logo design",
+    status: "waiting for delivery",
+    statusColor: "orange",
   },
   {
-    id: "ESC-2046",
-    title: "Brand identity package",
-    counterparty: "Goodform Design",
-    amount: "210,000 NGN",
-    status: "Completed",
-    detail: "Funds released",
-    statusClass: "bg-green-50 text-green-700",
+    id: "3",
+    email: "Kelvintech@gmail.com",
+    amount: "NGN20,000",
+    days: "7 days",
+    service: "Logo design",
+    status: "waiting for confirmation",
+    statusColor: "purple",
+  },
+  {
+    id: "4",
+    email: "Kelvintech@gmail.com",
+    amount: "NGN20,000",
+    days: "7 days",
+    service: "Logo design",
+    status: "Transaction completed",
+    statusColor: "green",
   },
 ];
 
 export default function EscrowPage() {
+  const [activeTab, setActiveTab] = useState<Tab>("buyer");
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+  const buyerEscrowsSnapshot = useSyncExternalStore(
+    subscribeToBuyerEscrows,
+    getBuyerEscrowsSnapshot,
+    getServerBuyerEscrowsSnapshot,
+  );
+  const { escrows: buyerEscrows, error: buyerEscrowsError } =
+    parseBuyerEscrowsSnapshot(buyerEscrowsSnapshot);
+  const buyerEscrowsLoaded = buyerEscrowsSnapshot !== "";
+
+  const hasBuyerEscrows = buyerEscrows.length > 0;
+  const hasSellerEscrows = sellerEscrows.length > 0;
+
+  const statusStyles: Record<string, string> = {
+    orange: "bg-orange-50 text-orange-600 border-orange-100",
+    green: "bg-green-50 text-green-600 border-green-100",
+    purple: "bg-purple-50 text-purple-600 border-purple-100",
+  };
+
   return (
-    <div className="mx-auto max-w-6xl space-y-6">
-      <section className="overflow-hidden rounded-2xl bg-blue-600 p-6 text-white sm:p-8">
-        <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-          <div className="max-w-xl">
-            <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-xs font-medium">
-              <ShieldCheck className="h-4 w-4" aria-hidden="true" />
-              Protected payments
-            </div>
-            <h2 className="text-2xl font-bold tracking-tight">
-              Escrow workspace
-            </h2>
-            <p className="mt-2 text-sm leading-6 text-blue-100">
-              Keep payment and delivery details together so both sides know
-              what to expect.
-            </p>
-            <p className="mt-2 text-xs text-blue-100/80">
-              Sample figures and activity for layout preview only.
-            </p>
-          </div>
-          <Link
-            href="#escrow-activity"
-            className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-white px-4 py-3 text-sm font-semibold text-blue-700 transition hover:bg-blue-50"
-          >
-            <Plus className="h-4 w-4" aria-hidden="true" />
-            Explore escrow activity
-          </Link>
-        </div>
-      </section>
+    <>
+      <div className="max-w-6xl mx-auto relative">
+        <h1 className="text-2xl font-semibold text-gray-900 mb-6">Escrow</h1>
 
-      <section className="grid gap-4 sm:grid-cols-3" aria-label="Escrow summary">
-        {[
-          { label: "Active agreements", value: "2", icon: <Clock3 /> },
-          { label: "Awaiting your review", value: "1", icon: <BadgeCheck /> },
-          { label: "Completed", value: "8", icon: <ShieldCheck /> },
-        ].map((item) => (
-          <div
-            key={item.label}
-            className="flex items-center gap-4 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm"
+        {/* Tabs */}
+        <div className="flex items-center gap-2 mb-8">
+          <button
+            onClick={() => setActiveTab("buyer")}
+            className={`px-5 py-2 rounded-full text-sm font-medium transition ${
+              activeTab === "buyer"
+                ? "bg-white text-gray-900 shadow-sm border border-gray-200"
+                : "text-gray-500 hover:text-gray-800"
+            }`}
           >
-            <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-blue-600 [&>svg]:h-5 [&>svg]:w-5">
-              {item.icon}
-            </span>
-            <div>
-              <p className="text-sm text-gray-500">{item.label}</p>
-              <p className="mt-1 text-xl font-bold text-gray-900">
-                {item.value}
-              </p>
-            </div>
-          </div>
-        ))}
-      </section>
-
-      <section
-        id="escrow-activity"
-        className="scroll-mt-24 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm sm:p-6"
-      >
-        <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <h2 className="text-base font-semibold text-gray-900">
-              Recent escrow activity
-            </h2>
-            <p className="mt-1 text-xs text-gray-400">
-              Sample activity for layout preview
-            </p>
-          </div>
-          <Link
-            href="/dashboard/transactions"
-            className="inline-flex items-center gap-1 text-sm font-medium text-blue-600 hover:text-blue-700"
+            Buyer
+          </button>
+          <button
+            onClick={() => setActiveTab("seller")}
+            className={`px-5 py-2 rounded-full text-sm font-medium transition ${
+              activeTab === "seller"
+                ? "bg-white text-gray-900 shadow-sm border border-gray-200"
+                : "text-gray-500 hover:text-gray-800"
+            }`}
           >
-            View transactions
-            <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
-          </Link>
+            Seller
+          </button>
         </div>
 
-        <div className="space-y-3">
-          {escrowItems.map((item) => (
-            <article
-              key={item.id}
-              className="flex flex-col gap-4 rounded-xl border border-gray-100 p-4 sm:flex-row sm:items-center sm:justify-between"
-            >
-              <div className="flex min-w-0 items-center gap-3">
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-50 text-blue-600">
-                  <ShieldCheck className="h-5 w-5" aria-hidden="true" />
-                </span>
-                <div className="min-w-0">
-                  <h3 className="truncate text-sm font-semibold text-gray-900">
-                    {item.title}
-                  </h3>
-                  <p className="mt-1 text-xs text-gray-500">
-                    {item.id} - {item.counterparty}
-                  </p>
-                </div>
+        {/* ========== BUYER TAB ========== */}
+        {activeTab === "buyer" && (
+          <>
+            {!buyerEscrowsLoaded ? (
+              <div
+                role="status"
+                className="rounded-2xl border border-gray-100 bg-white p-8 text-center text-sm text-gray-500"
+              >
+                Loading your escrows...
               </div>
-              <div className="flex flex-wrap items-center justify-between gap-3 sm:justify-end">
-                <div className="sm:text-right">
-                  <p className="text-sm font-semibold text-gray-900">
-                    {item.amount}
-                  </p>
-                  <p className="mt-1 text-xs text-gray-500">{item.detail}</p>
+            ) : buyerEscrowsError ? (
+              <div
+                role="alert"
+                className="rounded-2xl border border-red-100 bg-white p-8 text-center text-sm text-red-600"
+              >
+                {buyerEscrowsError}
+              </div>
+            ) : !hasBuyerEscrows ? (
+              /* Empty State */
+              <div className="bg-white rounded-2xl border border-gray-100 py-20 flex flex-col items-center justify-center text-center">
+                <div className="w-20 h-20 rounded-full bg-blue-50 flex items-center justify-center mb-5">
+                  <FileText
+                    className="w-10 h-10 text-blue-400"
+                    strokeWidth={1.5}
+                    aria-hidden="true"
+                  />
                 </div>
-                <span
-                  className={`rounded-full px-3 py-1 text-xs font-medium ${item.statusClass}`}
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  You have no Escrow
+                </h3>
+                <p className="text-sm text-gray-500 mb-6 max-w-xs">
+                  Set your first Escrow and take control of your product
+                </p>
+                <Link
+                  href="/dashboard/escrow/create"
+                  className="px-6 py-3 bg-blue-600 text-white text-sm font-medium rounded-xl hover:bg-blue-700 transition"
                 >
-                  {item.status}
-                </span>
+                  Create Escrow
+                </Link>
               </div>
-            </article>
-          ))}
-        </div>
-      </section>
+            ) : (
+              /* Buyer Cards Grid */
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {buyerEscrows.map((item, index) => (
+                  <div
+                    key={`${item.id}-${index}`}
+                    className="bg-white rounded-2xl border border-gray-100 p-5 relative hover:shadow-md transition"
+                  >
+                    {/* Header */}
+                    <div className="flex items-start justify-between mb-4">
+                      <div>
+                        <p className="text-sm font-semibold text-gray-900">
+                          #{item.id}
+                        </p>
+                        <div className="flex items-center gap-1.5 mt-1 text-xs text-gray-500">
+                          <Mail className="w-3.5 h-3.5" aria-hidden="true" />
+                          {item.email}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="flex items-center gap-1 text-xs text-gray-500">
+                          <Clock3 className="w-3.5 h-3.5" aria-hidden="true" />
+                          {item.days}
+                        </span>
+                        <div className="relative">
+                          <button
+                            onClick={() =>
+                              setOpenMenuId(
+                                openMenuId === `buyer-${index}`
+                                  ? null
+                                  : `buyer-${index}`,
+                              )
+                            }
+                            className="p-1 rounded-lg hover:bg-gray-100 text-gray-400"
+                          >
+                            <MoreVertical
+                              className="w-5 h-5"
+                              aria-hidden="true"
+                            />
+                          </button>
 
-      <section
-        id="escrow-guide"
-        className="rounded-2xl border border-blue-100 bg-blue-50/70 p-5 sm:p-6"
-      >
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h2 className="text-base font-semibold text-gray-900">
-              A simple way to work together
-            </h2>
-            <p className="mt-1 max-w-2xl text-sm leading-6 text-gray-600">
-              Agree on the work, keep progress in one place, and review the
-              result before a payment is marked complete.
-            </p>
-          </div>
-          <Link
-            href="/dashboard/transactions"
-            className="inline-flex shrink-0 items-center gap-2 text-sm font-semibold text-blue-700 hover:text-blue-800"
-          >
-            Go to transactions
-            <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
-          </Link>
-        </div>
-      </section>
-    </div>
+                          {openMenuId === `buyer-${index}` && (
+                            <div className="absolute right-0 top-8 w-48 bg-white rounded-xl shadow-lg border border-gray-100 py-2 z-20">
+                              <button className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2">
+                                Contact Seller
+                              </button>
+                              <button className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2">
+                                Share transaction
+                              </button>
+                              <button className="w-full px-4 py-2.5 text-left text-sm text-red-500 hover:bg-red-50 flex items-center gap-2">
+                                Raise dispute
+                              </button>
+                              <button className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2">
+                                Cancel transaction
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    <p className="text-base font-bold text-gray-900 mb-4">
+                      {item.amount}
+                    </p>
+
+                    {item.details && (
+                      <p className="mb-3 text-sm text-gray-600">
+                        {item.details}
+                      </p>
+                    )}
+
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-xs text-gray-400 mb-1">Service</p>
+                        <span className="inline-block px-2.5 py-1 rounded-lg text-xs font-medium bg-blue-50 text-blue-600 border border-blue-100">
+                          {item.service}
+                        </span>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-xs text-gray-400 mb-1">Status</p>
+                        <span
+                          className={`inline-block px-2.5 py-1 rounded-lg text-xs font-medium border ${
+                            statusStyles[item.statusColor]
+                          }`}
+                        >
+                          {item.status}
+                        </span>
+                      </div>
+                    </div>
+                    <p className="mt-3 text-xs text-gray-400">
+                      {item.feePayer} pays the escrow fee
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </>
+        )}
+
+        {/* ========== SELLER TAB ========== */}
+        {activeTab === "seller" && (
+          <>
+            {!hasSellerEscrows ? (
+              <div className="bg-white rounded-2xl border border-gray-100 py-20 flex flex-col items-center justify-center text-center">
+                <div className="w-20 h-20 rounded-full bg-blue-50 flex items-center justify-center mb-5">
+                  <FileText
+                    className="w-10 h-10 text-blue-400"
+                    strokeWidth={1.5}
+                    aria-hidden="true"
+                  />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  No seller escrows yet
+                </h3>
+                <p className="text-sm text-gray-500 max-w-xs">
+                  Escrows where you are the seller will appear here
+                </p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {sellerEscrows.map((item) => (
+                  <div
+                    key={item.id}
+                    className="bg-white rounded-2xl border border-gray-100 p-5 relative hover:shadow-md transition"
+                  >
+                    {/* Header */}
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center">
+                          <ShieldCheck
+                            className="w-4 h-4 text-blue-600"
+                            aria-hidden="true"
+                          />
+                        </div>
+                        <p className="text-sm font-semibold text-gray-900">
+                          Funds Secured in Escrow
+                        </p>
+                      </div>
+
+                      <div className="relative">
+                        <button
+                          onClick={() =>
+                            setOpenMenuId(
+                              openMenuId === `seller-${item.id}`
+                                ? null
+                                : `seller-${item.id}`,
+                            )
+                          }
+                          className="p-1 rounded-lg hover:bg-gray-100 text-gray-400"
+                        >
+                          <MoreVertical
+                            className="w-5 h-5"
+                            aria-hidden="true"
+                          />
+                        </button>
+
+                        {openMenuId === `seller-${item.id}` && (
+                          <div className="absolute right-0 top-8 w-48 bg-white rounded-xl shadow-lg border border-gray-100 py-2 z-20">
+                            <button className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50">
+                              Contact buyer
+                            </button>
+                            <button className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50">
+                              Share transaction
+                            </button>
+                            <button className="w-full px-4 py-2.5 text-left text-sm text-red-500 hover:bg-red-50">
+                              Raise concern
+                            </button>
+                            <button className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50">
+                              Cancel transaction
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Details */}
+                    <div className="space-y-3 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-gray-500">Status</span>
+                        <span
+                          className={`px-2.5 py-0.5 rounded-lg text-xs font-medium border ${
+                            statusStyles[item.statusColor]
+                          }`}
+                        >
+                          {item.status}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-500">Buyer</span>
+                        <div className="flex items-center gap-2">
+                          <div className="w-5 h-5 rounded-full bg-gray-200" />
+                          <span className="font-medium text-gray-900">
+                            {item.email}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-500">Delivery</span>
+                        <span className="font-medium text-gray-900">
+                          {item.days}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-500">Amount</span>
+                        <span className="font-medium text-gray-900">
+                          {item.amount}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-500">Service</span>
+                        <span className="px-2.5 py-0.5 rounded-lg text-xs font-medium bg-amber-50 text-amber-700 border border-amber-100">
+                          {item.service}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </>
+        )}
+
+        {/* Floating Create Button */}
+        <Link
+          href="/dashboard/escrow/create"
+          className="fixed bottom-24 right-6 lg:bottom-10 lg:right-10 w-14 h-14 bg-blue-600 text-white rounded-full flex items-center justify-center shadow-lg shadow-blue-600/30 hover:bg-blue-700 transition z-30"
+        >
+          <Plus className="w-6 h-6" aria-hidden="true" />
+        </Link>
+      </div>
+    </>
   );
 }
