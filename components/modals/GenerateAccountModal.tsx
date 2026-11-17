@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { X } from "lucide-react";
 
 interface GenerateAccountModalProps {
   isOpen: boolean;
@@ -89,7 +90,7 @@ export default function GenerateAccountModal({
       <div className="relative bg-white rounded-2xl w-full max-w-md shadow-xl">
         {step === "form" ? (
           <>
-            <div className="p-6 pb-2">
+            <div className="p-6 pb-2 ml-7 mr-7 border-b border-gray-200 flex items-center justify-center">
               <h2 className="text-lg font-semibold text-gray-900 text-center">
                 Generate account
               </h2>
@@ -185,19 +186,7 @@ export default function GenerateAccountModal({
               onClick={handleClose}
               className="absolute top-4 right-4 p-1 text-gray-400 hover:text-gray-600"
             >
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
+              <X className="w-5 h-5" aria-hidden="true" />
             </button>
 
             <div className="w-12 h-12 mb-5 relative">

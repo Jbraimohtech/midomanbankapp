@@ -2,6 +2,17 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import {
+  ChevronRight,
+  CircleHelp,
+  Info,
+  Languages,
+  LockKeyhole,
+  LogOut,
+  MessageCircle,
+  Moon,
+  UserRound,
+} from "lucide-react";
 
 type Tab = "general" | "profile" | "security";
 
@@ -256,19 +267,7 @@ export default function SettingsPage() {
                       <span className="text-sm font-medium text-gray-900">
                         Device management
                       </span>
-                      <svg
-                        className="w-5 h-5 text-gray-400 group-hover:text-gray-600 transition"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth={1.8}
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M9 5l7 7-7 7"
-                        />
-                      </svg>
+                      <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-gray-600 transition" aria-hidden="true" />
                     </button>
                   </div>
                 </div>
@@ -317,38 +316,14 @@ export default function SettingsPage() {
                       href="#"
                       className="flex items-center gap-2 text-sm text-blue-600 font-medium hover:underline"
                     >
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth={1.8}
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-                        />
-                      </svg>
+                      <MessageCircle className="w-4 h-4" aria-hidden="true" />
                       Contact support
                     </Link>
                     <Link
                       href="#"
                       className="flex items-center gap-2 text-sm text-blue-600 font-medium hover:underline"
                     >
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth={1.8}
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                      </svg>
+                      <CircleHelp className="w-4 h-4" aria-hidden="true" />
                       FAQ&apos;s
                     </Link>
                   </div>
@@ -385,36 +360,12 @@ export default function SettingsPage() {
             className="flex items-center justify-between px-4 py-3.5 hover:bg-gray-50 transition"
           >
             <div className="flex items-center gap-3">
-              <svg
-                className="w-5 h-5 text-gray-500"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={1.8}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                />
-              </svg>
+              <UserRound className="w-5 h-5 text-gray-500" aria-hidden="true" />
               <span className="text-sm font-medium text-gray-900">
                 Personal info
               </span>
             </div>
-            <svg
-              className="w-5 h-5 text-gray-400"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={1.8}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
+            <ChevronRight className="w-5 h-5 text-gray-400" aria-hidden="true" />
           </Link>
 
           <Link
@@ -422,90 +373,30 @@ export default function SettingsPage() {
             className="flex items-center justify-between px-4 py-3.5 hover:bg-gray-50 transition border-t border-gray-50"
           >
             <div className="flex items-center gap-3">
-              <svg
-                className="w-5 h-5 text-gray-500"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={1.8}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                />
-              </svg>
+              <LockKeyhole className="w-5 h-5 text-gray-500" aria-hidden="true" />
               <span className="text-sm font-medium text-gray-900">
                 Security
               </span>
             </div>
-            <svg
-              className="w-5 h-5 text-gray-400"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={1.8}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
+            <ChevronRight className="w-5 h-5 text-gray-400" aria-hidden="true" />
           </Link>
 
           <button className="flex items-center justify-between px-4 py-3.5 hover:bg-gray-50 transition border-t border-gray-50 w-full">
             <div className="flex items-center gap-3">
-              <svg
-                className="w-5 h-5 text-gray-500"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={1.8}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"
-                />
-              </svg>
+              <Languages className="w-5 h-5 text-gray-500" aria-hidden="true" />
               <span className="text-sm font-medium text-gray-900">
                 Language
               </span>
             </div>
             <div className="flex items-center gap-2">
               <span className="text-sm text-gray-500">English (US)</span>
-              <svg
-                className="w-5 h-5 text-gray-400"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={1.8}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
+              <ChevronRight className="w-5 h-5 text-gray-400" aria-hidden="true" />
             </div>
           </button>
 
           <div className="flex items-center justify-between px-4 py-3.5 border-t border-gray-50">
             <div className="flex items-center gap-3">
-              <svg
-                className="w-5 h-5 text-gray-500"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={1.8}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
-                />
-              </svg>
+              <Moon className="w-5 h-5 text-gray-500" aria-hidden="true" />
               <span className="text-sm font-medium text-gray-900">
                 Dark mode
               </span>
@@ -536,36 +427,12 @@ export default function SettingsPage() {
             className="flex items-center justify-between px-4 py-3.5 hover:bg-gray-50 transition"
           >
             <div className="flex items-center gap-3">
-              <svg
-                className="w-5 h-5 text-gray-500"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={1.8}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
+              <CircleHelp className="w-5 h-5 text-gray-500" aria-hidden="true" />
               <span className="text-sm font-medium text-gray-900">
                 Help Center
               </span>
             </div>
-            <svg
-              className="w-5 h-5 text-gray-400"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={1.8}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
+            <ChevronRight className="w-5 h-5 text-gray-400" aria-hidden="true" />
           </Link>
 
           <Link
@@ -573,54 +440,18 @@ export default function SettingsPage() {
             className="flex items-center justify-between px-4 py-3.5 hover:bg-gray-50 transition border-t border-gray-50"
           >
             <div className="flex items-center gap-3">
-              <svg
-                className="w-5 h-5 text-gray-500"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={1.8}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
+              <Info className="w-5 h-5 text-gray-500" aria-hidden="true" />
               <span className="text-sm font-medium text-gray-900">
                 About midoman
               </span>
             </div>
-            <svg
-              className="w-5 h-5 text-gray-400"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={1.8}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
+            <ChevronRight className="w-5 h-5 text-gray-400" aria-hidden="true" />
           </Link>
         </div>
 
         {/* Logout */}
         <button className="flex items-center gap-3 px-4 py-3.5 text-red-500 font-medium text-sm w-full">
-          <svg
-            className="w-5 h-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={1.8}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-            />
-          </svg>
+          <LogOut className="w-5 h-5" aria-hidden="true" />
           Logout
         </button>
       </div>

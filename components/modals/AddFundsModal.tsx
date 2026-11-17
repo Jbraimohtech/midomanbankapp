@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Check, X } from "lucide-react";
 
 interface AddFundsModalProps {
   isOpen: boolean;
@@ -71,19 +72,7 @@ export default function AddFundsModal({
                 onClick={handleClose}
                 className="p-1 text-gray-400 hover:text-gray-600"
               >
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
+                <X className="w-5 h-5" aria-hidden="true" />
               </button>
             </div>
 
@@ -158,19 +147,7 @@ export default function AddFundsModal({
           /* Success State */
           <div className="p-10 flex flex-col items-center text-center">
             <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mb-5">
-              <svg
-                className="w-8 h-8 text-green-600"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
+              <Check className="w-8 h-8 text-green-600" aria-hidden="true" />
             </div>
             <h3 className="text-lg font-semibold text-gray-900 mb-1">
               Transfer Initiated
