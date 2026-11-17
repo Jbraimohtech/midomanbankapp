@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CalendarDays, X } from "lucide-react";
 
 interface GenerateAccountModalProps {
@@ -27,9 +27,17 @@ export default function GenerateAccountModal({
     dob?: string;
     phone?: string;
   }>({});
-  const today = new Date();
-  today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
-  const maxDob = today.toISOString().slice(0, 10);
+  const [maxDob, setMaxDob] = useState("");
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      const today = new Date();
+      today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
+      setMaxDob(today.toISOString().slice(0, 10));
+    }, 0);
+
+    return () => window.clearTimeout(timer);
+  }, []);
 
   if (!isOpen) return null;
 
@@ -41,7 +49,7 @@ export default function GenerateAccountModal({
       newErrors.bvn = "BVN must be 11 digits";
 
     if (!dob.trim()) newErrors.dob = "Date of birth is required";
-    else if (dob > maxDob)
+    else if (maxDob && dob > maxDob)
       newErrors.dob = "Date of birth cannot be in the future";
 
     if (!phone.trim()) newErrors.phone = "Mobile number is required";
