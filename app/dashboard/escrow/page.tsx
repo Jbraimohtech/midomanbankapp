@@ -85,10 +85,10 @@ export default function EscrowPage() {
         <h1 className="text-2xl font-semibold text-gray-900 mb-6">Escrow</h1>
 
         {/* Tabs */}
-        <div className="flex items-center gap-2 mb-8">
+        <div className="flex bg-gray-100 max-w-100 p-2 rounded-md items-center gap-2 mb-8">
           <button
             onClick={() => setActiveTab("buyer")}
-            className={`px-5 py-2 rounded-full text-sm font-medium transition ${
+            className={`px-5 py-2 rounded-md w-45 text-sm font-medium transition ${
               activeTab === "buyer"
                 ? "bg-white text-gray-900 shadow-sm border border-gray-200"
                 : "text-gray-500 hover:text-gray-800"
@@ -98,7 +98,7 @@ export default function EscrowPage() {
           </button>
           <button
             onClick={() => setActiveTab("seller")}
-            className={`px-5 py-2 rounded-full text-sm font-medium transition ${
+            className={`px-5 py-2 rounded-md w-45 text-sm font-medium transition ${
               activeTab === "seller"
                 ? "bg-white text-gray-900 shadow-sm border border-gray-200"
                 : "text-gray-500 hover:text-gray-800"

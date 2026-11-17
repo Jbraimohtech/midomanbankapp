@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { X } from "lucide-react";
+import { CalendarDays, X } from "lucide-react";
 
 interface GenerateAccountModalProps {
   isOpen: boolean;
@@ -27,6 +27,9 @@ export default function GenerateAccountModal({
     dob?: string;
     phone?: string;
   }>({});
+  const today = new Date();
+  today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
+  const maxDob = today.toISOString().slice(0, 10);
 
   if (!isOpen) return null;
 
@@ -38,6 +41,8 @@ export default function GenerateAccountModal({
       newErrors.bvn = "BVN must be 11 digits";
 
     if (!dob.trim()) newErrors.dob = "Date of birth is required";
+    else if (dob > maxDob)
+      newErrors.dob = "Date of birth cannot be in the future";
 
     if (!phone.trim()) newErrors.phone = "Mobile number is required";
     else if (phone.length < 10) newErrors.phone = "Enter a valid phone number";
@@ -121,22 +126,43 @@ export default function GenerateAccountModal({
 
               {/* Date of birth */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                <label
+                  htmlFor="account-dob"
+                  className="block text-sm font-medium text-gray-700 mb-1.5"
+                >
                   Date of birth
                 </label>
-                <input
-                  type="text"
-                  value={dob}
-                  onChange={(e) => setDob(e.target.value)}
-                  placeholder="03/12/1995"
-                  className={`w-full px-4 py-3 rounded-xl border text-sm focus:outline-none focus:ring-2 transition ${
-                    errors.dob
-                      ? "border-red-400 focus:ring-red-500/20"
-                      : "border-gray-200 focus:ring-blue-500/20 focus:border-blue-500"
-                  }`}
-                />
+                <div className="relative">
+                  <CalendarDays
+                    className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none"
+                    aria-hidden="true"
+                  />
+                  <input
+                    id="account-dob"
+                    name="dob"
+                    type="date"
+                    value={dob}
+                    max={maxDob}
+                    required
+                    aria-invalid={Boolean(errors.dob)}
+                    aria-describedby={
+                      errors.dob ? "account-dob-error" : undefined
+                    }
+                    onChange={(e) => setDob(e.target.value)}
+                    className={`w-full pl-12 pr-4 py-3 rounded-xl border text-sm focus:outline-none focus:ring-2 transition ${
+                      errors.dob
+                        ? "border-red-400 focus:ring-red-500/20"
+                        : "border-gray-200 focus:ring-blue-500/20 focus:border-blue-500"
+                    }`}
+                  />
+                </div>
                 {errors.dob && (
-                  <p className="mt-1 text-xs text-red-500">{errors.dob}</p>
+                  <p
+                    id="account-dob-error"
+                    className="mt-1 text-xs text-red-500"
+                  >
+                    {errors.dob}
+                  </p>
                 )}
               </div>
 
