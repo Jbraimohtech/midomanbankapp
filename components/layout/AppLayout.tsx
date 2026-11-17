@@ -5,40 +5,60 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
 import MidomanLogo from "@/assets/midomanLogoCropped.png";
-import {
-  ArrowLeftRight,
-  Bell,
-  FileText,
-  Home,
-  LogOut,
-  Menu,
-  Phone,
-  Plus,
-  Search,
-  Settings,
-  X,
-} from "lucide-react";
+import depositIcon from "@/assets/deposit-icon.png";
+import escrowIcon from "@/assets/escrow-icon.png";
+import historyIcon from "@/assets/history-icon.png";
+import withdrawIcon from "@/assets/withdraw-icon.png";
+import centerTabIcon from "@/assets/center-tab-icon.png";
+import transactionIcon from "@/assets/transaction-icon.png";
+import homeIcon from "@/assets/Home-icon.png";
+import settingsIcon from "@/assets/setting-icon.png";
+
+import { Bell, LogOut, SunDim, Menu, Moon, Search, X } from "lucide-react";
 
 const navItems = [
   {
     label: "Home",
     href: "/dashboard",
-    icon: <Home className="w-5 h-5" aria-hidden="true" />,
+    icon: (
+      <Image src={homeIcon} alt="Home" className="w-5 h-5" aria-hidden="true" />
+    ),
   },
   {
     label: "Escrow",
     href: "/dashboard/escrow",
-    icon: <FileText className="w-5 h-5" aria-hidden="true" />,
+    icon: (
+      <Image
+        src={escrowIcon}
+        alt="Escrow"
+        className="w-5 h-5"
+        aria-hidden="true"
+      />
+    ),
   },
   {
     label: "Transactions",
     href: "/dashboard/transactions",
-    icon: <ArrowLeftRight className="w-5 h-5" aria-hidden="true" />,
+    icon: (
+      <Image
+        src={transactionIcon}
+        alt="Transactions"
+        className="w-5 h-5"
+        aria-hidden="true"
+      />
+    ),
   },
   {
     label: "Settings",
     href: "/dashboard/settings",
-    icon: <Settings className="w-5 h-5" aria-hidden="true" />,
+    icon: (
+      <Image
+        src={settingsIcon}
+        alt="Settings"
+        className="w-5 h-5"
+        aria-hidden="true"
+      />
+    ),
   },
 ];
 
@@ -103,18 +123,25 @@ export default function AppLayout({ children }: { children: ReactNode }) {
         </nav>
 
         {/* Bottom section */}
-        <div className="px-4 pb-6 space-y-4">
+        <div className="px-4 pb-6 space-y-4 flex flex-col justify-between items-center">
           {/* New features button */}
-          <button className="w-12 h-12 rounded-full bg-blue-600 text-white flex items-center justify-center shadow-lg shadow-blue-600/30 hover:bg-blue-700 transition mx-auto">
-            <Plus className="w-5 h-5" aria-hidden="true" />
-          </button>
-
-          <div className="flex items-center justify-center gap-4 text-gray-400">
-            <button className="p-2 hover:text-gray-600 transition">
-              <Settings className="w-5 h-5" aria-hidden="true" />
+          <div className="flex flex-col gap-3 justify-center items-center bg-gray-50 w-40 py-3 rounded-lg">
+            <button className="w-11 h-11 rounded-full bg-blue-600 text-white flex items-center justify-center shadow-lg shadow-blue-600/30 hover:bg-blue-700 transition mx-auto">
+              <Image
+                src={centerTabIcon}
+                alt="New Features"
+                className="w-11 h-11 object-cover"
+                aria-hidden="true"
+              />
+            </button>
+            <p className="text-base font-medium text-gray-300">New features</p>
+          </div>
+          <div className="flex items-center justify-center gap-2 p-1 rounded-full text-gray-400 bg-gray-100">
+            <button className="p-2 hover:text-gray-600 transition bg-white rounded-full">
+              <SunDim className="w-4 h-4" aria-hidden="true" />
             </button>
             <button className="p-2 hover:text-gray-600 transition">
-              <Phone className="w-5 h-5" aria-hidden="true" />
+              <Moon className="w-4 h-4" aria-hidden="true" />
             </button>
           </div>
 
@@ -146,11 +173,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                 className="flex items-center gap-2.5"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                <Image
-                  src={MidomanLogo}
-                  alt="Midoman"
-                  className="h-6 w-auto"
-                />
+                <Image src={MidomanLogo} alt="Midoman" className="h-6 w-auto" />
               </Link>
               <button
                 type="button"
@@ -240,9 +263,12 @@ export default function AppLayout({ children }: { children: ReactNode }) {
               <input
                 type="text"
                 placeholder="Search"
-                className="pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-full text-sm w-48 lg:w-64 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                className="pl-10 pr-4 py-2 bg-transparent border border-gray-200 rounded-lg text-sm w-48 lg:w-64 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
               />
-              <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" aria-hidden="true" />
+              <Search
+                className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2"
+                aria-hidden="true"
+              />
             </div>
             <button className="relative p-2 text-gray-500 hover:bg-gray-100 rounded-2xl transition border border-gray-300 hover:text-gray-900 ">
               <Bell className="w-5 h-5" aria-hidden="true" />
@@ -278,7 +304,12 @@ export default function AppLayout({ children }: { children: ReactNode }) {
 
           {/* Center action button */}
           <button className="w-14 h-14 -mt-6 rounded-full bg-blue-600 text-white flex items-center justify-center shadow-lg shadow-blue-600/40">
-            <ArrowLeftRight className="w-6 h-6" aria-hidden="true" />
+            <Image
+              src={centerTabIcon}
+              alt="New Features"
+              className="w-6 h-6"
+              aria-hidden="true"
+            />
           </button>
 
           {navItems.slice(2).map((item) => {

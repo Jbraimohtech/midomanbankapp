@@ -330,7 +330,7 @@ export default function DashboardHome() {
                 </div>
               ) : (
                 <div className="flex-1 flex flex-col items-center justify-center text-center px-4">
-                  <div className="w-30 h-30 -mt-100 rounded-full bg-blue-50 flex items-center justify-center mb-4">
+                  <div className="w-30 h-30 lg:-mt-100 rounded-full bg-blue-50 flex items-center justify-center mb-4">
                     <Image
                       src={depositEmptyIcon}
                       alt="Deposit Empty"
