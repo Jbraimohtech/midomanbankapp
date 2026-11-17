@@ -13,7 +13,7 @@ import escrowIcon from "@/assets/escrow-icon.png";
 import historyIcon from "@/assets/history-icon.png";
 import withdrawIcon from "@/assets/withdraw-icon.png";
 import depositEmptyIcon from "@/assets/deposit-empty-icon.png";
-import { ArrowDown, ArrowRight, Copy, CreditCard, Plus } from "lucide-react";
+import { ArrowRight, Copy, Plus } from "lucide-react";
 
 export default function DashboardHome() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -61,7 +61,7 @@ export default function DashboardHome() {
               </div>
               {/* The Lower Part of the Card */}
               <div className="grid grid-cols-2 bg-transparent">
-                <div className="flex col-span-1 items-center justify-between h-27 lg:-mt-2 rounded-br-4xl lg:rounded-br-3xl gap-4 bg-brand">
+                <div className="flex col-span-1 items-center justify-between h-27 lg:-mt-2 rounded-br-[60px] lg:rounded-br-3xl gap-4 bg-brand">
                   <div className="flex items-center gap-2">
                     <div className="flex">
                       <div className="flex ml-6 flex-col">
