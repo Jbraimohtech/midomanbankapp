@@ -188,8 +188,9 @@ export default function NotificationsPage() {
 
       <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div
+          role="group"
           aria-label="Filter notifications"
-          className="flex max-w-full gap-2 overflow-x-auto pb-1"
+          className="flex flex-wrap gap-2"
         >
           {filters.map((filter) => (
             <button
@@ -249,7 +250,7 @@ export default function NotificationsPage() {
                         key={notification.id}
                         type="button"
                         onClick={() => markAsRead(notification.id)}
-                        className={`flex w-full items-center gap-3 p-4 text-left transition hover:bg-gray-50 sm:gap-4 sm:px-5 ${
+                        className={`flex w-full items-start gap-3 p-4 text-left transition hover:bg-gray-50 sm:items-center sm:gap-4 sm:px-5 ${
                           notification.read ? "" : "bg-blue-50/40"
                         }`}
                       >
@@ -275,8 +276,19 @@ export default function NotificationsPage() {
                           <p className="mt-1 text-sm leading-5 text-gray-500">
                             {notification.message}
                           </p>
+                          <div className="mt-2 flex items-center justify-between sm:hidden">
+                            <span className="text-xs text-gray-400">
+                              {notification.time}
+                            </span>
+                            {!notification.read && (
+                              <span className="inline-flex items-center gap-1.5 text-xs font-medium text-blue-600">
+                                <span className="h-2 w-2 rounded-full bg-blue-600" />
+                                Unread
+                              </span>
+                            )}
+                          </div>
                         </div>
-                        <div className="flex shrink-0 items-center gap-2">
+                        <div className="hidden shrink-0 items-center gap-2 sm:flex">
                           <span className="whitespace-nowrap text-xs text-gray-400">
                             {notification.time}
                           </span>
