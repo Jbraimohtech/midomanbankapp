@@ -66,11 +66,19 @@ export default function AppLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const currentPage =
-    navItems.find(
-      (item) =>
-        pathname === item.href ||
-        (item.href !== "/dashboard" && pathname.startsWith(`${item.href}/`)),
-    )?.label ?? "Home";
+    pathname === "/dashboard/notifications"
+      ? "Notifications"
+      : (navItems.find(
+          (item) =>
+            pathname === item.href ||
+            (item.href !== "/dashboard" &&
+              pathname.startsWith(`${item.href}/`)),
+        )?.label ?? "Home");
+  const dispatchDashboardHome = (href: string) => {
+    if (href === "/dashboard" && pathname === "/dashboard") {
+      window.dispatchEvent(new Event("midoman:dashboard-home"));
+    }
+  };
 
   useEffect(() => {
     if (!isMobileMenuOpen) return;
@@ -89,7 +97,11 @@ export default function AppLayout({ children }: { children: ReactNode }) {
       <aside className="hidden lg:flex w-[240px] flex-col bg-white border-r border-gray-100 fixed h-full z-30">
         {/* Logo */}
         <div className="px-6 py-6">
-          <Link href="/dashboard" aria-label="Midoman home">
+          <Link
+            href="/dashboard"
+            aria-label="Midoman home"
+            onClick={() => dispatchDashboardHome("/dashboard")}
+          >
             <Image
               src={MidomanLogo}
               alt="Midoman"
@@ -109,6 +121,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
               <Link
                 key={item.href}
                 href={item.href}
+                onClick={() => dispatchDashboardHome(item.href)}
                 className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
                   isActive
                     ? "bg-blue-600 text-white shadow-md shadow-blue-600/20"
@@ -171,7 +184,10 @@ export default function AppLayout({ children }: { children: ReactNode }) {
               <Link
                 href="/dashboard"
                 className="flex items-center gap-2.5"
-                onClick={() => setIsMobileMenuOpen(false)}
+                onClick={() => {
+                  dispatchDashboardHome("/dashboard");
+                  setIsMobileMenuOpen(false);
+                }}
               >
                 <Image src={MidomanLogo} alt="Midoman" className="h-6 w-auto" />
               </Link>
@@ -200,7 +216,10 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                     key={item.href}
                     href={item.href}
                     aria-current={isActive ? "page" : undefined}
-                    onClick={() => setIsMobileMenuOpen(false)}
+                    onClick={() => {
+                      dispatchDashboardHome(item.href);
+                      setIsMobileMenuOpen(false);
+                    }}
                     className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition ${
                       isActive
                         ? "bg-blue-600 text-white shadow-md shadow-blue-600/20"
@@ -270,10 +289,17 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                 aria-hidden="true"
               />
             </div>
-            <button className="relative p-2 text-gray-500 hover:bg-gray-100 rounded-2xl transition border border-gray-300 hover:text-gray-900 ">
+            <Link
+              href="/dashboard/notifications"
+              aria-label="Notifications"
+              aria-current={
+                pathname === "/dashboard/notifications" ? "page" : undefined
+              }
+              className="relative p-2 text-gray-500 hover:bg-gray-100 rounded-2xl transition border border-gray-300 hover:text-gray-900"
+            >
               <Bell className="w-5 h-5" aria-hidden="true" />
               <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full" />
-            </button>
+            </Link>
           </div>
         </header>
 
@@ -282,8 +308,8 @@ export default function AppLayout({ children }: { children: ReactNode }) {
       </div>
 
       {/* ========== MOBILE BOTTOM NAV ========== */}
-      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-gray-100 px-6 py-2 safe-area-pb">
-        <div className="flex items-center justify-between max-w-md mx-auto">
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-gray-100 px-6 py-3 safe-area-pb">
+        <div className="grid max-w-md grid-cols-5 items-center mx-auto">
           {navItems.slice(0, 2).map((item) => {
             const isActive =
               pathname === item.href ||
@@ -292,7 +318,8 @@ export default function AppLayout({ children }: { children: ReactNode }) {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex flex-col items-center gap-1 py-2 px-3 ${
+                onClick={() => dispatchDashboardHome(item.href)}
+                className={`flex flex-col items-center gap-1 py-2 px-1 ${
                   isActive ? "text-blue-600" : "text-gray-400"
                 }`}
               >
@@ -303,11 +330,15 @@ export default function AppLayout({ children }: { children: ReactNode }) {
           })}
 
           {/* Center action button */}
-          <button className="w-14 h-14 -mt-6 rounded-full bg-blue-600 text-white flex items-center justify-center shadow-lg shadow-blue-600/40">
+          <button
+            type="button"
+            aria-label="New features"
+            className="w-14 h-14 justify-self-center rounded-full bg-blue-600 text-white flex items-center justify-center shadow-lg shadow-blue-600/40"
+          >
             <Image
               src={centerTabIcon}
               alt="New Features"
-              className="w-6 h-6"
+              className="w-14 h-14 object-cover"
               aria-hidden="true"
             />
           </button>
@@ -319,7 +350,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex flex-col items-center gap-1 py-2 px-3 ${
+                className={`flex flex-col items-center gap-1 py-2 px-1 ${
                   isActive ? "text-blue-600" : "text-gray-400"
                 }`}
               >

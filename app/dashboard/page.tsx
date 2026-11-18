@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import BrandModel from "@/assets/midomanModelImage.png";
 import GenerateAccountModal from "@/components/modals/GenerateAccountModal";
-import { Fragment, useState } from "react";
+import { useEffect, useState } from "react";
 import AddFundsModal from "@/components/modals/AddFundsModal";
 import WithdrawalFlow from "@/components/withdraw/WithdrawalFlow";
 import MidomanLogo from "@/assets/midomanLogoCropped.png";
@@ -25,8 +25,22 @@ export default function DashboardHome() {
   const [isAddFundsOpen, setIsAddFundsOpen] = useState(false);
   const [showWithdraw, setShowWithdraw] = useState(false);
   const [showMobileRightColumn, setShowMobileRightColumn] = useState(false);
+  const [rightColumnView, setRightColumnView] = useState<
+    "deposit-history" | "history"
+  >("deposit-history");
 
   const hasAccount = !!account;
+
+  useEffect(() => {
+    const showHome = () => {
+      setShowMobileRightColumn(false);
+      setShowWithdraw(false);
+      setRightColumnView("deposit-history");
+    };
+
+    window.addEventListener("midoman:dashboard-home", showHome);
+    return () => window.removeEventListener("midoman:dashboard-home", showHome);
+  }, []);
 
   return (
     <div className="max-w-6xl mx-auto">
@@ -110,7 +124,6 @@ export default function DashboardHome() {
               {[
                 {
                   label: "Withdraw",
-                  href: "/dashboard/withdraw",
                   icon: (
                     <Image
                       src={withdrawIcon}
@@ -122,7 +135,6 @@ export default function DashboardHome() {
                 },
                 {
                   label: "Deposit",
-                  href: "/dashboard/deposit",
                   icon: (
                     <Image
                       src={depositIcon}
@@ -134,7 +146,6 @@ export default function DashboardHome() {
                 },
                 {
                   label: "Escrow",
-                  href: "/dashboard/escrow",
                   icon: (
                     <Image
                       src={escrowIcon}
@@ -146,7 +157,6 @@ export default function DashboardHome() {
                 },
                 {
                   label: "History",
-                  href: "/dashboard/transactions",
                   icon: (
                     <Image
                       src={historyIcon}
@@ -156,52 +166,89 @@ export default function DashboardHome() {
                     />
                   ),
                 },
-              ].map((action) =>
-                action.label === "Withdraw" ? (
-                  <button
-                    key={action.label}
-                    type="button"
-                    onClick={() => {
-                      setShowWithdraw(true);
-                      setShowMobileRightColumn(true);
-                    }}
-                    className="flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-gray-50 transition group"
-                  >
-                    <div className="w-12 h-12 rounded-full bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-600 group-hover:bg-blue-50 group-hover:text-blue-600 group-hover:border-blue-100 transition">
+              ].map((action) => {
+                const actionContent = (
+                  <>
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full border border-gray-100 bg-gray-50 text-gray-600 transition group-hover:border-blue-100 group-hover:bg-blue-50 group-hover:text-blue-600">
                       {action.icon}
                     </div>
                     <span className="text-xs font-medium text-gray-600 group-hover:text-gray-900">
                       {action.label}
                     </span>
-                  </button>
-                ) : (
-                  <Fragment key={action.label}>
-                    <Link
-                      href={action.href}
-                      className="hidden flex-col items-center gap-2 rounded-xl p-3 transition hover:bg-gray-50 group xl:flex"
-                    >
-                      <div className="flex h-12 w-12 items-center justify-center rounded-full border border-gray-100 bg-gray-50 text-gray-600 transition group-hover:border-blue-100 group-hover:bg-blue-50 group-hover:text-blue-600">
-                        {action.icon}
-                      </div>
-                      <span className="text-xs font-medium text-gray-600 group-hover:text-gray-900">
-                        {action.label}
-                      </span>
-                    </Link>
+                  </>
+                );
+                const actionClassName =
+                  "flex flex-col items-center gap-2 rounded-xl p-3 transition group";
+
+                if (action.label === "Withdraw") {
+                  return (
                     <button
+                      key={action.label}
                       type="button"
-                      onClick={() => setShowMobileRightColumn(true)}
-                      className="flex flex-col items-center gap-2 rounded-xl p-3 transition hover:bg-gray-50 group xl:hidden"
+                      onClick={() => {
+                        setShowWithdraw(true);
+                        setShowMobileRightColumn(true);
+                      }}
+                      className={`${actionClassName} hover:bg-gray-50`}
                     >
-                      <div className="flex h-12 w-12 items-center justify-center rounded-full border border-gray-100 bg-gray-50 text-gray-600 transition group-hover:border-blue-100 group-hover:bg-blue-50 group-hover:text-blue-600">
-                        {action.icon}
-                      </div>
-                      <span className="text-xs font-medium text-gray-600 group-hover:text-gray-900">
-                        {action.label}
-                      </span>
+                      {actionContent}
                     </button>
-                  </Fragment>
-                ),
-              )}
+                  );
+                }
+
+                if (action.label === "Deposit") {
+                  return (
+                    <button
+                      key={action.label}
+                      type="button"
+                      disabled={!hasAccount}
+                      title={
+                        hasAccount
+                          ? undefined
+                          : "Generate an account to deposit"
+                      }
+                      onClick={() => {
+                        setShowWithdraw(false);
+                        setIsAddFundsOpen(true);
+                      }}
+                      className={`${actionClassName} ${
+                        hasAccount
+                          ? "hover:bg-gray-50"
+                          : "cursor-not-allowed opacity-50"
+                      }`}
+                    >
+                      {actionContent}
+                    </button>
+                  );
+                }
+
+                if (action.label === "History") {
+                  return (
+                    <button
+                      key={action.label}
+                      type="button"
+                      onClick={() => {
+                        setShowWithdraw(false);
+                        setRightColumnView("history");
+                        setShowMobileRightColumn(true);
+                      }}
+                      className={`${actionClassName} hover:bg-gray-50`}
+                    >
+                      {actionContent}
+                    </button>
+                  );
+                }
+
+                return (
+                  <Link
+                    key={action.label}
+                    href="/dashboard/escrow"
+                    className={`${actionClassName} hover:bg-gray-50`}
+                  >
+                    {actionContent}
+                  </Link>
+                );
+              })}
             </div>
           </div>
 
@@ -242,12 +289,17 @@ export default function DashboardHome() {
               <h3 className="text-sm lg:text-[24px] font-semibold text-gray-900">
                 Active transaction
               </h3>
-              <Link
-                href="/dashboard/transactions"
+              <button
+                type="button"
+                onClick={() => {
+                  setShowWithdraw(false);
+                  setRightColumnView("history");
+                  setShowMobileRightColumn(true);
+                }}
                 className="text-sm text-gray-300 font-normal hover:underline"
               >
                 See all
-              </Link>
+              </button>
             </div>
 
             <div className="flex items-center justify-between p-3 rounded-xl bg-gray-50">
@@ -272,27 +324,65 @@ export default function DashboardHome() {
 
         {/* ========== RIGHT COLUMN ========== */}
         <div className="xl:col-span-7 space-y-6">
-          {showMobileRightColumn && (
+          {/* {showMobileRightColumn && (
             <button
               type="button"
               onClick={() => {
                 setShowMobileRightColumn(false);
                 setShowWithdraw(false);
+                setRightColumnView("deposit-history");
               }}
               className="mb-4 inline-flex items-center gap-2 text-sm font-medium text-blue-600 xl:hidden"
             >
               <span aria-hidden="true">&larr;</span>
               Back to dashboard
             </button>
-          )}
+          )} */}
           {showWithdraw ? (
             <WithdrawalFlow
               availableBalance={account ? 20000 : 0}
               onClose={() => setShowWithdraw(false)}
             />
+          ) : rightColumnView === "history" ? (
+            <div className="bg-white rounded-2xl p-5 sm:p-8 lg:p-12 shadow-sm border border-gray-100 h-full min-h-[320px] flex flex-col">
+              <h3 className="text-base lg:text-[24px] font-medium text-gray-900 mb-8">
+                History
+              </h3>
+
+              <div className="space-y-4">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="flex shadow-sm p-3 rounded-2xl bg-gray-50/25 items-center justify-between"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center">
+                        <Image
+                          src={depositIcon}
+                          alt="Deposit"
+                          className="w-4 h-4 text-gray-500"
+                          aria-hidden="true"
+                        />
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-gray-900">
+                          +20,000NGN
+                        </p>
+                        <p className="text-xs text-gray-400">
+                          deposit via providus bank
+                        </p>
+                      </div>
+                    </div>
+                    <span className="text-xs font-medium text-green-600">
+                      Successful
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
           ) : (
             /* Deposit History */
-            <div className="bg-white rounded-2xl p-12 shadow-sm border border-gray-100 h-full min-h-[320px] flex flex-col">
+            <div className="bg-white rounded-2xl p-5 sm:p-8 lg:p-12 shadow-sm border border-gray-100 h-full min-h-[320px] flex flex-col">
               <h3 className="text-base lg:text-[24px] font-medium text-gray-900 mb-8">
                 Deposit history
               </h3>
